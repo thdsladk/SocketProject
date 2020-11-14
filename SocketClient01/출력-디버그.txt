@@ -1,0 +1,38 @@
+﻿'SocketServer01.exe'(Win32): 'C:\Users\admin\source\repos\SocketServer01\Debug\SocketServer01.exe'을(를) 로드했습니다. 기호가 로드되었습니다.
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\ntdll.dll'을(를) 로드했습니다. 
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\kernel32.dll'을(를) 로드했습니다. 
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\KernelBase.dll'을(를) 로드했습니다. 
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\ws2_32.dll'을(를) 로드했습니다. 
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\rpcrt4.dll'을(를) 로드했습니다. 
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\msvcp140d.dll'을(를) 로드했습니다. 
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\vcruntime140d.dll'을(를) 로드했습니다. 
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\ucrtbased.dll'을(를) 로드했습니다. 
+0x778 스레드가 종료되었습니다(코드: 0 (0x0)).
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\mswsock.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Users\admin\source\repos\SocketServer01\Debug\SocketClient01.exe'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\ntdll.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\kernel32.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\KernelBase.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\ws2_32.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\rpcrt4.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\msvcp140d.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\vcruntime140d.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\ucrtbased.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\mswsock.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\kernel.appcore.dll'을(를) 로드했습니다. 
+'SocketClient01.exe'(Win32): 'C:\Windows\SysWOW64\msvcrt.dll'을(를) 로드했습니다. 
+0x1374 스레드가 종료되었습니다(코드: 0 (0x0)).
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\kernel.appcore.dll'을(를) 로드했습니다. 
+'SocketServer01.exe'(Win32): 'C:\Windows\SysWOW64\msvcrt.dll'을(를) 로드했습니다. 
+0xd34 스레드가 종료되었습니다(코드: 0 (0x0)).
+0x226c 스레드가 종료되었습니다(코드: 0 (0x0)).
+0xc04 스레드가 종료되었습니다(코드: -1073741510 (0xc000013a)).
+0x1fc8 스레드가 종료되었습니다(코드: -1073741510 (0xc000013a)).
+0x1730 스레드가 종료되었습니다(코드: -1073741510 (0xc000013a)).
+0x1d14 스레드가 종료되었습니다(코드: -1073741510 (0xc000013a)).
+0x2838 스레드가 종료되었습니다(코드: -1073741510 (0xc000013a)).
+'[8336] SocketClient01.exe' 프로그램이 종료되었습니다(코드: -1073741510 (0xc000013a)).
+0xf70 스레드가 종료되었습니다(코드: -1073741510 (0xc000013a)).
+0x9b4 스레드가 종료되었습니다(코드: -1073741510 (0xc000013a)).
+0xe3c 스레드가 종료되었습니다(코드: -1073741510 (0xc000013a)).
+'[9980] SocketServer01.exe' 프로그램이 종료되었습니다(코드: -1073741510 (0xc000013a)).
