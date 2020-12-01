@@ -3,27 +3,185 @@
 #include <iostream>
 #include <thread>
 
+
+#include <string>
+#include <windows.h>
+
+
+
 #pragma comment(lib,"ws2_32")
 
 
-#define PORT 4579
-#define PACKET_SIZE 1024
-#define SERVER_IP "192.168.219.104"
+
 //192.168.219.104
 
 using namespace std;
 
 
 //전역변수 
-int SysEnd = 1;   // 채팅기능 온오프 표시 1은 on 0은 off
+static int SysEnd = 1;   // 채팅기능 온오프 표시 1은 on 0은 off
 
-void f_recv(SOCKET* m_hSock, char* m_cBuffer, char* m_cMsg)
+char IPv4[16] = { 0, };  // 서버  IPv4 주소 
+
+const int PacketSize = 1024;  // 상수 패킷사이즈 
+const int Port = 4579;        // 상수 포트 번호 
+
+const UINT ChatLine = 22;     // 채팅이 나올 줄 
+
+static HANDLE hCursor = GetStdHandle(STD_OUTPUT_HANDLE); // 콘솔 커서에 대한 핸들 
+
+COORD gPos = { 0,0 };
+
+//클래스 전방 선언 
+
+class Manager ;
+
+
+
+inline void gotoxy(WORD x, WORD y)
+{
+	COORD pos = { (short)x,(short)y };
+	SetConsoleCursorPosition(hCursor, pos);
+}
+
+inline void ClearLine(WORD x, WORD y, WORD line)
+{
+	COORD pos = { (short)x,(short)y };
+	SetConsoleCursorPosition(hCursor, pos);
+	for (int h = 0; h < line; h++)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			cout << "    ";
+		}
+		cout << endl;
+	}
+
+	SetConsoleCursorPosition(hCursor, pos);
+}
+
+
+inline void CursorView(char show)//커서숨기기
+{
+
+	CONSOLE_CURSOR_INFO ConsoleCursor;
+
+	ConsoleCursor.bVisible = show;
+	ConsoleCursor.dwSize = 1;
+
+	SetConsoleCursorInfo(hCursor, &ConsoleCursor);
+}
+
+inline COORD getXY() {
+	COORD pos;
+	CONSOLE_SCREEN_BUFFER_INFO a;
+
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &a);
+	pos.X = a.dwCursorPosition.X;
+	pos.Y = a.dwCursorPosition.Y;
+	return pos;
+}
+
+
+
+
+
+
+class Manager
+{
+public:
+	static Manager& CreateInst()
+	{
+		static Manager* inst_ = new Manager();
+		return *inst_;
+	}
+
+
+	static void f_send(SOCKET* m_hSock, char* m_cBuffer, char* m_cMsg, Manager* _manager);
+	static void f_recv(SOCKET* m_hSock, char* m_cBuffer, char* m_cMsg, Manager* _manager);
+
+
+	void ChatSystem(char* Buffer);
+	void Print();
+
+	~Manager() {}
+	Manager(const Manager&) = delete;  // 싱글톤 디자인패턴이라서  사용할 일은 없으리라 생각.
+
+protected:
+
+	Manager()
+	{
+		gotoxy(0, 21);
+		for (int i = 0; i < 13; i++)cout << "〓〓〓〓";               //생성자에서 화면 설정 초기화 일부하기 
+	}
+
+private:
+	
+
+	string ChatLog[20] ;
+	WORD LogSpace = 0;
+
+};
+
+
+
+
+void Manager::ChatSystem(char* Buffer)
+{
+	if (LogSpace < 20)
+	{
+		ChatLog[LogSpace] = " 서버 : ";
+		ChatLog[LogSpace]+=Buffer;
+		LogSpace++;
+	}
+	else if (LogSpace == 20)
+	{
+		for (int i = 0; i < 19; i++)
+		{
+			ChatLog[i].clear();
+			ChatLog[i] = ChatLog[i + 1];
+		}
+		ChatLog[19] = " 서버 : ";
+		ChatLog[19] += Buffer;
+	}
+
+
+
+}
+
+
+
+void Manager::Print()
+{
+	ClearLine(0, 0, 20);
+
+	for (int i = 0; i < 20; i++)
+	{
+		cout << ChatLog[i] << endl;
+	}
+
+
+
+	gotoxy(gPos.X, gPos.Y);
+	//커서위치를 채팅 위치 맨 왼쪽으로 바꾼다 . 
+	//채팅을 치던중에 채팅이 들어와서 화면이 갱신되면 커서 위치를 
+	//원래 타이핑 지점으로 돌려야 하지만 아직은 미구현
+
+
+}
+
+
+
+
+void Manager::f_recv(SOCKET* m_hSock, char* m_cBuffer, char* m_cMsg, Manager* _manager)
 {
 	while (1)
 	{
 
-		recv(*m_hSock, m_cBuffer, PACKET_SIZE, 0);
-		
+		recv(*m_hSock, m_cBuffer, PacketSize, 0);
+		gPos = getXY();     // 현재 커서 좌표값을 저장
+
+		if (SysEnd == 0) { system("cls"); printf(" 시스템 종료 "); break; } // 시스템이 꺼지면 보내는 기능도 정지
 
 		if (m_cBuffer[0] == '/' && m_cBuffer[1] == 'Q')   // /Q 입력시  서버 클라이언트 종료 .
 		{
@@ -31,27 +189,28 @@ void f_recv(SOCKET* m_hSock, char* m_cBuffer, char* m_cMsg)
 			SysEnd = 0;
 			break;
 		}
-		else if (m_cBuffer[0] != 0)
+		else if (m_cBuffer != "")
 		{
-			printf(" 서버 : %s \n", m_cBuffer);
-			memset(m_cBuffer, 0, (size_t)PACKET_SIZE);
+			_manager->ChatSystem(m_cBuffer);
+			_manager->Print();
+			memset(m_cBuffer, 0, (size_t)PacketSize);
 		}
-		
 
-		
+
+
 
 	}
-	return  ;
+	return;
 }
 
 
-void f_send(SOCKET* m_hSock, char* m_cBuffer, char* m_cMsg)
+void Manager::f_send(SOCKET* m_hSock, char* m_cBuffer, char* m_cMsg, Manager* _manager)
 {
 	while (1)
 	{
 
 		//채팅기능의 핵심 
-
+		ClearLine(0, ChatLine, 1);
 		printf(" 입력 : ");
 
 		//scanf("%s \n", cMsg);     
@@ -59,22 +218,49 @@ void f_send(SOCKET* m_hSock, char* m_cBuffer, char* m_cMsg)
 
 		cin >> m_cMsg;
 
-		if (SysEnd == 0) { system("cls"); printf(" 시스템 종료 "); break; } // 시스템이 꺼지면 보내는 기능도 정지
+
+		if (SysEnd == 0) { system("cls"); printf(" 서비스 종료 "); break; } // 시스템이 꺼지면 보내는 기능도 정지
+
+		if (m_cMsg[0] == '/' && m_cMsg[1] == 'Q')   // /Q 입력시  서버 클라이언트 종료 .
+		{
+			send(*m_hSock, m_cMsg, strlen(m_cMsg), 0);
+			SysEnd = 0;
+			system("cls");
+			printf(" 시스템 종료 ");
+			break;
+		}
 
 		send(*m_hSock, m_cMsg, strlen(m_cMsg), 0);
 
 
 
 	}
-	return ;
+	return;
 }
 
-char IPv4[12] = { 0, };
+
+
+
+
+
+
 int main()
 {
 	cout << "서버 주소를 입력하세요 : ";
 	cin >> IPv4;
 	system("cls");
+
+	Manager* manager = nullptr;
+	manager = &(Manager::CreateInst());
+
+
+
+	//커서 없애기
+	CursorView(0);
+
+
+
+
 
 
 	WSADATA wsaData;
@@ -85,7 +271,7 @@ int main()
 
 	SOCKADDR_IN tAddr = {};
 	tAddr.sin_family = AF_INET;
-	tAddr.sin_port = htons(PORT);
+	tAddr.sin_port = htons(Port);
 	tAddr.sin_addr.s_addr = inet_addr(IPv4);
 
 	connect(hSocket, (SOCKADDR*)&tAddr, sizeof(tAddr));
@@ -95,11 +281,11 @@ int main()
 	char cMsg[] = "Client Send";
 
 
-	char cBuffer[PACKET_SIZE] = {};
+	char cBuffer[PacketSize] = {};
 
-	thread Recv(f_recv, &hSocket, cBuffer, cMsg);
-	thread Send(f_send, &hSocket, cBuffer, cMsg);
-
+	thread Recv(Manager::f_recv, &hSocket, cBuffer, cMsg, manager);
+	thread Send(Manager::f_send, &hSocket, cBuffer, cMsg, manager);
+	
 	
 
 	Recv.join();
@@ -109,5 +295,13 @@ int main()
 
 	WSACleanup();
 
+	hCursor = nullptr;   // 콘솔 커서 핸들  널값으로 만들기 .
+	delete manager;
+
+
+
 	return 0;
 }
+
+
+
